@@ -33,7 +33,7 @@ import { FindAll<%= h.inflection.transform(name, ['pluralize']) %>Dto } from './
 
 @ApiTags('<%= h.inflection.transform(name, ['pluralize', 'humanize']) %>')
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 @Controller({
   path: '<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>',
   version: '1',

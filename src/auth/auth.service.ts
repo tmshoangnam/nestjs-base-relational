@@ -431,7 +431,7 @@ export class AuthService {
 
     delete userDto.email;
     delete userDto.oldPassword;
-    let updateData = {
+    const updateData = {
       ...userDto,
       roleIds: currentUser.roles.map((r) => r.id as number),
     };

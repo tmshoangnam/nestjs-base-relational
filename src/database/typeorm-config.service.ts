@@ -27,8 +27,6 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
       cli: {
         entitiesDir: 'src',
-
-        subscribersDir: 'subscriber',
       },
       extra: {
         // based on https://node-postgres.com/apis/pool

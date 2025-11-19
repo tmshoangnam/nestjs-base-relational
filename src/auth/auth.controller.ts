@@ -8,7 +8,6 @@ import {
   Post,
   UseGuards,
   Patch,
-  Delete,
   SerializeOptions,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -25,6 +24,7 @@ import { RefreshResponseDto } from './dto/refresh-response.dto';
 import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
+import { JwtAuthGuard } from './strategies/jwt.guard';
 
 @ApiTags('Auth')
 @Controller({
@@ -68,7 +68,7 @@ export class AuthController {
     groups: ['me'],
   })
   @Get('me')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(RoleEnum.admin)
   @ApiOkResponse({
     type: User,
@@ -97,7 +97,7 @@ export class AuthController {
 
   @ApiBearerAuth()
   @Post('logout')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async logout(@Request() request): Promise<void> {
     await this.service.logout({
@@ -110,7 +110,7 @@ export class AuthController {
     groups: ['me'],
   })
   @Patch('me')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: User,

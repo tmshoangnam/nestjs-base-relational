@@ -19,14 +19,14 @@ import { RolesGuard } from './roles.guard';
 import { Roles } from './roles.decorator';
 import { RoleEnum } from './roles.enum';
 import { plainToClass } from 'class-transformer';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @ApiTags('Roles')
 @Controller({
   path: 'roles',
   version: '1',
 })
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(RoleEnum.admin)
 @ApiBearerAuth()
 export class RolesController {
