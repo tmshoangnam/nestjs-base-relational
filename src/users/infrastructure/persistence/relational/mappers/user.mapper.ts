@@ -54,12 +54,12 @@ export class UserMapper {
     if (domainEntity.id && typeof domainEntity.id === 'number') {
       persistenceEntity.id = domainEntity.id;
     }
-    persistenceEntity.email = domainEntity.email;
+    persistenceEntity.email = domainEntity.email || '';
     persistenceEntity.password = domainEntity.password;
     persistenceEntity.provider = domainEntity.provider;
     persistenceEntity.socialId = domainEntity.socialId;
-    persistenceEntity.firstName = domainEntity.firstName;
-    persistenceEntity.lastName = domainEntity.lastName;
+    persistenceEntity.firstName = domainEntity.firstName || '';
+    persistenceEntity.lastName = domainEntity.lastName || '';
     persistenceEntity.roles = roles || [];
     persistenceEntity.status = status;
     persistenceEntity.createdAt = domainEntity.createdAt;

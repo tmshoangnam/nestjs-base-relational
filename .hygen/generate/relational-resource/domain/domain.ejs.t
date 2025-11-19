@@ -5,13 +5,22 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class <%= name %> {
   @ApiProperty({
-    type: String,
+    type: Number,
   })
-  id: string;
+  id: number;
 
   @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty()
+  deletedAt: Date;
+
+  @ApiProperty()
+  createdBy: number | string;
+
+  @ApiProperty()
+  updatedBy: number | string;
 }

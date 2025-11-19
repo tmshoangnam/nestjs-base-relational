@@ -21,6 +21,7 @@ export class ExceptionsFilter implements ExceptionFilter {
         statusCode: exception.statusCode,
         message: exception.message,
         reason: exception.reason,
+        details: exception.details || null,
       };
     } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();

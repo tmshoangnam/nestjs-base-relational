@@ -121,8 +121,8 @@ export class AuthService {
     if (user) {
       if (socialEmail && !userByEmail) {
         user.email = socialEmail;
+        await this.usersService.update(user.id, user);
       }
-      await this.usersService.update(user.id, user);
     } else if (userByEmail) {
       user = userByEmail;
     } else if (socialData.id) {

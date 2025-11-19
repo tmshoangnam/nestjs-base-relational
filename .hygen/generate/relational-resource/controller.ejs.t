@@ -23,7 +23,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { <%= name %> } from './domain/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import {
   InfinityPaginationResponse,
   InfinityPaginationResponseDto,

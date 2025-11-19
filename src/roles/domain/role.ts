@@ -8,7 +8,7 @@ export class Role {
   @ApiProperty({
     type: idType,
   })
-  id: number;
+  id: number | string;
 
   @Allow()
   @ApiProperty({

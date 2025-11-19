@@ -17,7 +17,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Transform(lowerCaseTransformer)
   @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string | null;
 
   @ApiPropertyOptional()
   @IsOptional()
@@ -30,11 +30,11 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @ApiPropertyOptional({ example: 'John', type: String })
   @IsOptional()
-  firstName: string;
+  firstName?: string | null;
 
   @ApiPropertyOptional({ example: 'Doe', type: String })
   @IsOptional()
-  lastName: string;
+  lastName?: string | null;
 
   @ApiPropertyOptional({ type: [Number], example: [1, 2] })
   @IsOptional()
