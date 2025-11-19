@@ -4,31 +4,20 @@ import {
   ValidationPipeOptions,
 } from '@nestjs/common';
 import { BusinessException } from '../common/exception/business.exception';
-import { getMessage } from '../common/exception/message.helper';
 
 function generateErrors(errors: ValidationError[]) {
-  return errors.flatMap((err) =>
-        formatValidationErrors(err)
-      );
-
-  // return errors.reduce(
-  //   (accumulator, currentValue) => ({
-  //     ...accumulator,
-  //     [currentValue.property]:
-  //       (currentValue.children?.length ?? 0) > 0
-  //         ? generateErrors(currentValue.children ?? [])
-  //         : Object.values(currentValue.constraints ?? {}).join(', '),
-  //   }),
-  //   {},
-  // );
+  return errors.flatMap((err) => formatValidationErrors(err));
 }
 
-function formatValidationErrors(error: ValidationError, parentPath: string[] = []) {
+function formatValidationErrors(
+  error: ValidationError,
+  parentPath: string[] = [],
+) {
   const path = [...parentPath, error.property];
 
   const constraints = error.constraints
     ? Object.entries(error.constraints).map(([code, message]) => ({
-        code,          // vd: "isNotEmpty", "isEmail", ...
+        code, // vd: "isNotEmpty", "isEmail", ...
         path,
         message,
       }))
@@ -37,7 +26,7 @@ function formatValidationErrors(error: ValidationError, parentPath: string[] = [
   const children = error.children || [];
 
   const nested = children.flatMap((child) =>
-    formatValidationErrors(child, path)
+    formatValidationErrors(child, path),
   );
 
   return [...constraints, ...nested];
@@ -49,9 +38,9 @@ const validationOptions: ValidationPipeOptions = {
   errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
   exceptionFactory: (errors: ValidationError[]) => {
     throw BusinessException.unprocessable(
-      "Validation failed",
+      'Validation failed',
       undefined,
-      generateErrors(errors)
+      generateErrors(errors),
     );
   },
 };

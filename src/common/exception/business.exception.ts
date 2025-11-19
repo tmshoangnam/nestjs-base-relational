@@ -31,7 +31,11 @@ export class BusinessException extends Error {
     return new BusinessException(message, 409, reason, details);
   }
 
-  static unprocessable(message: any, reason = 'UnprocessableEntity', details?: any) {
+  static unprocessable(
+    message: any,
+    reason = 'UnprocessableEntity',
+    details?: any,
+  ) {
     return new BusinessException(message, 422, reason, details);
   }
 
@@ -40,7 +44,11 @@ export class BusinessException extends Error {
   }
 
   // 🔹 For unexpected situations or business rules
-  static businessRule(message: any, reason = 'BusinessRuleViolation', details?: any) {
+  static businessRule(
+    message: any,
+    reason = 'BusinessRuleViolation',
+    details?: any,
+  ) {
     return new BusinessException(message, 400, reason, details);
   }
 
