@@ -16,7 +16,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const user = request?.user;
     if (user) {
       this.cls.set('userId', user.id);
-      console.log('JwtAuthGuard set userId in CLS:', this.cls.get('userId'));
     }
 
     return can;

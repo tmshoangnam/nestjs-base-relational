@@ -16,7 +16,7 @@ export class User {
     example: 'john.doe@example.com',
   })
   @Expose({ groups: ['me', 'admin'] })
-  email: string | null;
+  email: string;
 
   @Exclude({ toPlainOnly: true })
   password?: string;
@@ -39,13 +39,13 @@ export class User {
     type: String,
     example: 'John',
   })
-  firstName: string | null;
+  firstName: string;
 
   @ApiProperty({
     type: String,
     example: 'Doe',
   })
-  lastName: string | null;
+  lastName: string;
 
   @ApiProperty({
     type: [Role],
@@ -65,4 +65,10 @@ export class User {
 
   @ApiProperty()
   deletedAt: Date;
+
+  @ApiProperty()
+  createdBy: number | string;
+
+  @ApiProperty()
+  updatedBy: number | string;
 }

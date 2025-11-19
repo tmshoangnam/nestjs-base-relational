@@ -35,7 +35,7 @@ export class UsersService {
       password = await bcrypt.hash(createUserDto.password, salt);
     }
     this.logger.log(`Creating user: ${JSON.stringify(createUserDto)}`);
-    let email: string | null = null;
+    let email: string = createUserDto.email;
 
     if (createUserDto.email) {
       const userObject = await this.usersRepository.findByEmail(
@@ -149,7 +149,7 @@ export class UsersService {
       }
     }
 
-    let email: string | null | undefined = undefined;
+    let email: string = updateUserDto.email;
 
     if (updateUserDto.email) {
       const userObject = await this.usersRepository.findByEmail(
@@ -162,8 +162,6 @@ export class UsersService {
       }
 
       email = updateUserDto.email;
-    } else if (updateUserDto.email === null) {
-      email = null;
     }
 
     let roles: Role[] | undefined = undefined;

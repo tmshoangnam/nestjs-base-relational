@@ -8,26 +8,26 @@ import { StatusEnum } from '../../../../statuses.enum';
   name: 'user',
 })
 export class UserEntity extends EntityRelationalHelper {
-  @Column({ type: String, unique: true, nullable: true })
-  email: string | null;
+  @Column({ type: String, unique: true, length: 255 })
+  email: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 255 })
   password?: string;
 
-  @Column({ default: AuthProvidersEnum.email })
+  @Column({ default: AuthProvidersEnum.email, length: 50 })
   provider: string;
 
   @Index()
-  @Column({ type: String, nullable: true })
+  @Column({ type: String, nullable: true, length: 255, unique: true })
   socialId?: string | null;
 
   @Index()
-  @Column({ type: String, nullable: true })
-  firstName: string | null;
+  @Column({ type: String, length: 100 })
+  firstName: string;
 
   @Index()
-  @Column({ type: String, nullable: true })
-  lastName: string | null;
+  @Column({ type: String, length: 100 })
+  lastName: string;
 
   // Multi-role support
   @ManyToMany(() => RoleEntity, { eager: true })

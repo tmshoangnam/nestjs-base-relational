@@ -5,12 +5,9 @@ import { EntityRelationalHelper } from '../../../../../utils/relational-entity-h
   name: 'role',
 })
 export class RoleEntity extends EntityRelationalHelper {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
+  @Column({ unique: true , length: 50})
   name?: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true , length:500})
   description?: string;
 }

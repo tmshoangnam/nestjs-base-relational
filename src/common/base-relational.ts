@@ -14,15 +14,15 @@ export abstract class BaseRelational extends BaseEntity {
   @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ nullable: true })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ nullable: true })
   deletedAt: Date;
 
-  @Column({ nullable: true })
-  createdBy: string;
+  @Column({ type: "bigint"})
+  createdBy: number;
 
-  @Column({ nullable: true })
-  updatedBy: string;
+  @Column({ type: "bigint", nullable: true })
+  updatedBy: number;
 }
