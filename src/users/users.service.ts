@@ -42,7 +42,7 @@ export class UsersService {
         createUserDto.email,
       );
       if (userObject) {
-        throw BusinessException.unprocessable(
+        throw BusinessException.badRequest(
           getMessage(MessagesEnum.EMAIL_ALREADY_EXISTS),
         );
       }
@@ -68,7 +68,7 @@ export class UsersService {
         .map(String)
         .includes(String(createUserDto.status));
       if (!statusObject) {
-        throw BusinessException.unprocessable(
+        throw BusinessException.badRequest(
           getMessage(MessagesEnum.STATUS_NOT_EXISTS),
         );
       }
@@ -155,9 +155,8 @@ export class UsersService {
       const userObject = await this.usersRepository.findByEmail(
         updateUserDto.email,
       );
-
-      if (userObject && userObject.id !== id) {
-        throw BusinessException.unprocessable(
+      if (userObject && userObject.id != id) {
+        throw BusinessException.badRequest(
           getMessage(MessagesEnum.EMAIL_ALREADY_EXISTS),
         );
       }
@@ -171,17 +170,19 @@ export class UsersService {
 
     if (updateUserDto.roleIds && updateUserDto.roleIds.length > 0) {
       // Validate all roles
-      for (const roleId of updateUserDto.roleIds) {
-        const roleObject = Object.values(RoleEnum)
-          .map(String)
-          .includes(String(roleId));
-        if (!roleObject) {
-          throw BusinessException.unprocessable(
-            getMessage(MessagesEnum.ROLE_NOT_EXISTS),
-          );
-        }
+      const roleFromIds = await this.rolesService.findByIds(
+        updateUserDto.roleIds,
+      );
+      if (
+        roleFromIds.length &&
+        roleFromIds.length === updateUserDto.roleIds.length
+      ) {
+        roles = updateUserDto.roleIds.map((id) => ({ id }));
+      } else {
+        throw BusinessException.badRequest(
+          getMessage(MessagesEnum.ROLE_NOT_EXISTS),
+        );
       }
-      roles = updateUserDto.roleIds.map((id) => ({ id }));
     }
 
     let status: StatusEnum | undefined = undefined;
@@ -191,7 +192,7 @@ export class UsersService {
         .map(String)
         .includes(String(updateUserDto.status));
       if (!statusObject) {
-        throw BusinessException.unprocessable(
+        throw BusinessException.badRequest(
           getMessage(MessagesEnum.STATUS_NOT_EXISTS),
         );
       }

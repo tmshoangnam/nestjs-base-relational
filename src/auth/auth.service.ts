@@ -1,10 +1,4 @@
-import {
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import ms from 'ms';
 import crypto from 'crypto';
 import { randomStringGenerator } from '@nestjs/common/utils/random-string-generator.util';
@@ -32,9 +26,12 @@ import { RolesService } from '../roles/roles.service';
 import { AppCacheService } from '../common/cache/application/services/cache.service';
 import { Role } from '../roles/domain/role';
 import { BusinessException } from '../common/exception/business.exception';
+import { MessagesEnum } from '../common/exception/messages.enum';
+import { getMessage } from '../common/exception/message.helper';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,
@@ -49,30 +46,21 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: 'notFound',
-        },
-      });
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     if (user.provider !== AuthProvidersEnum.email) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: `needLoginViaProvider:${user.provider}`,
-        },
-      });
+      throw BusinessException.badRequest(
+        getMessage(MessagesEnum.LOGIN_VIA_PROVIDER, {
+          provider: user.provider,
+        }),
+      );
     }
 
     if (!user.password) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
-      });
+      throw BusinessException.badRequest(
+        getMessage(MessagesEnum.INCORRECT_PASSWORD),
+      );
     }
 
     const isValidPassword = await bcrypt.compare(
@@ -81,12 +69,9 @@ export class AuthService {
     );
 
     if (!isValidPassword) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          password: 'incorrectPassword',
-        },
-      });
+      throw BusinessException.badRequest(
+        getMessage(MessagesEnum.INCORRECT_PASSWORD),
+      );
     }
 
     const hash = crypto
@@ -141,11 +126,11 @@ export class AuthService {
     } else if (userByEmail) {
       user = userByEmail;
     } else if (socialData.id) {
-      const roleIds = [
-        await this.getRole(RoleEnum.user.toString()).then(
-          (role) => role.id as number,
-        ),
-      ];
+      let roleIds: number[] = [];
+      const role = await this.roleService.findByName(RoleEnum.user);
+      if (role) {
+        roleIds = [role.id as number];
+      }
       const status = StatusEnum.active;
 
       user = await this.usersService.create({
@@ -162,12 +147,7 @@ export class AuthService {
     }
 
     if (!user) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          user: 'userNotFound',
-        },
-      });
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     const hash = crypto
@@ -207,7 +187,9 @@ export class AuthService {
     }
     const roleEntity = await this.roleService.findByName(roleName);
     if (!roleEntity) {
-      throw BusinessException.notFound(`Role ${roleName} not found`);
+      throw BusinessException.notFound(
+        getMessage(MessagesEnum.ROLE_NOT_EXISTS),
+      );
     }
     await this.cache.set(`role:${roleName}`, roleEntity);
     return roleEntity as Role;
@@ -257,21 +239,13 @@ export class AuthService {
 
       userId = jwtData.confirmEmailUserId;
     } catch {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          hash: `invalidHash`,
-        },
-      });
+      throw BusinessException.badRequest(getMessage(MessagesEnum.INVALID_HASH));
     }
 
     const user = await this.usersService.findById(userId);
 
     if (!user || user?.status !== StatusEnum.inactive) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: `notFound`,
-      });
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     user.status = StatusEnum.active;
@@ -296,21 +270,13 @@ export class AuthService {
       userId = jwtData.confirmEmailUserId;
       newEmail = jwtData.newEmail;
     } catch {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          hash: `invalidHash`,
-        },
-      });
+      throw BusinessException.badRequest(getMessage(MessagesEnum.INVALID_HASH));
     }
 
     const user = await this.usersService.findById(userId);
 
     if (!user) {
-      throw new NotFoundException({
-        status: HttpStatus.NOT_FOUND,
-        error: `notFound`,
-      });
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     user.email = newEmail;
@@ -323,12 +289,9 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          email: 'emailNotExists',
-        },
-      });
+      throw BusinessException.badRequest(
+        getMessage(MessagesEnum.EMAIL_NOT_EXISTS),
+      );
     }
 
     const tokenExpiresIn = this.configService.getOrThrow('auth.forgotExpires', {
@@ -372,23 +335,13 @@ export class AuthService {
 
       userId = jwtData.forgotUserId;
     } catch {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          hash: `invalidHash`,
-        },
-      });
+      throw BusinessException.badRequest(getMessage(MessagesEnum.INVALID_HASH));
     }
 
     const user = await this.usersService.findById(userId);
 
     if (!user) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          hash: `notFound`,
-        },
-      });
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     user.password = password;
@@ -411,31 +364,20 @@ export class AuthService {
     const currentUser = await this.usersService.findById(userJwtPayload.id);
 
     if (!currentUser) {
-      throw new UnprocessableEntityException({
-        status: HttpStatus.UNPROCESSABLE_ENTITY,
-        errors: {
-          user: 'userNotFound',
-        },
-      });
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     if (userDto.password) {
       if (!userDto.oldPassword) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            oldPassword: 'missingOldPassword',
-          },
-        });
+        throw BusinessException.badRequest(
+          getMessage(MessagesEnum.MISSING_OLD_PASSWORD),
+        );
       }
 
       if (!currentUser.password) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            oldPassword: 'incorrectOldPassword',
-          },
-        });
+        throw BusinessException.badRequest(
+          getMessage(MessagesEnum.INCORRECT_OLD_PASSWORD),
+        );
       }
 
       const isValidOldPassword = await bcrypt.compare(
@@ -444,12 +386,9 @@ export class AuthService {
       );
 
       if (!isValidOldPassword) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            oldPassword: 'incorrectOldPassword',
-          },
-        });
+        throw BusinessException.badRequest(
+          getMessage(MessagesEnum.INCORRECT_OLD_PASSWORD),
+        );
       } else {
         await this.sessionService.deleteByUserIdWithExclude({
           userId: currentUser.id,
@@ -462,12 +401,9 @@ export class AuthService {
       const userByEmail = await this.usersService.findByEmail(userDto.email);
 
       if (userByEmail && userByEmail.id !== currentUser.id) {
-        throw new UnprocessableEntityException({
-          status: HttpStatus.UNPROCESSABLE_ENTITY,
-          errors: {
-            email: 'emailExists',
-          },
-        });
+        throw BusinessException.badRequest(
+          getMessage(MessagesEnum.EMAIL_ALREADY_EXISTS),
+        );
       }
 
       const hash = await this.jwtService.signAsync(
@@ -495,8 +431,14 @@ export class AuthService {
 
     delete userDto.email;
     delete userDto.oldPassword;
-
-    await this.usersService.update(userJwtPayload.id, userDto);
+    let updateData = {
+      ...userDto,
+      roleIds: currentUser.roles.map((r) => r.id as number),
+    };
+    this.logger.log(
+      `Updating user ID ${userJwtPayload.id} with data: ${JSON.stringify(userDto)}`,
+    );
+    await this.usersService.update(userJwtPayload.id, updateData);
 
     return this.usersService.findById(userJwtPayload.id);
   }
@@ -507,11 +449,15 @@ export class AuthService {
     const session = await this.sessionService.findById(data.sessionId);
 
     if (!session) {
-      throw new UnauthorizedException();
+      throw BusinessException.unauthorized(
+        getMessage(MessagesEnum.AUTH_UNAUTHORIZED),
+      );
     }
 
     if (session.hash !== data.hash) {
-      throw new UnauthorizedException();
+      throw BusinessException.unauthorized(
+        getMessage(MessagesEnum.AUTH_UNAUTHORIZED),
+      );
     }
 
     const hash = crypto
@@ -522,7 +468,9 @@ export class AuthService {
     const user = await this.usersService.findById(session.user.id);
 
     if (!user?.roles || user.roles.length === 0) {
-      throw new UnauthorizedException();
+      throw BusinessException.unauthorized(
+        getMessage(MessagesEnum.AUTH_UNAUTHORIZED),
+      );
     }
 
     await this.sessionService.update(session.id, {

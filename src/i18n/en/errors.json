@@ -9,5 +9,6 @@
   "missingOldPassword": "Missing old password",
   "invalidHash": "Invalid or expired link",
   "statusNotExists": "Status does not exist",
-  "roleNotExists": "Role does not exist"
+  "roleNotExists": "Role does not exist",
+  "loginViaProvider": "Please login via {{provider}}"
 }

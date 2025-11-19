@@ -6,6 +6,7 @@ import {
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { RelationalUserPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
+import { RolesModule } from '../roles/roles.module';
 
 const infrastructurePersistenceModule = RelationalUserPersistenceModule;
 
@@ -13,6 +14,7 @@ const infrastructurePersistenceModule = RelationalUserPersistenceModule;
   imports: [
     // import modules, etc.
     infrastructurePersistenceModule,
+    RolesModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

@@ -6,7 +6,7 @@ import {
   Post,
   SerializeOptions,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { ApiHideProperty, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { AuthGoogleService } from './auth-google.service';
 import { AuthGoogleLoginDto } from './dto/auth-google-login.dto';
@@ -26,6 +26,7 @@ export class AuthGoogleController {
   @ApiOkResponse({
     type: LoginResponseDto,
   })
+  @ApiHideProperty()
   @SerializeOptions({
     groups: ['me'],
   })

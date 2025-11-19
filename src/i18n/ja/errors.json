@@ -9,5 +9,6 @@
   "missingOldPassword": "古いパスワードが必要です",
   "invalidHash": "リンクが無効か期限切れです",
   "statusNotExists": "ステータスが存在しません",
-  "roleNotExists": "ロールが存在しません"
+  "roleNotExists": "ロールが存在しません",
+  "loginViaProvider": "{{provider}}を通じてログインしてください"
 }

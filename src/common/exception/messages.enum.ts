@@ -10,4 +10,8 @@ export enum MessagesEnum {
   INVALID_HASH = 'errors.invalidHash',
   STATUS_NOT_EXISTS = 'errors.statusNotExists',
   ROLE_NOT_EXISTS = 'errors.roleNotExists',
+  AUTH_UNAUTHORIZED = 'errors.auth.unauthorized',
+  INVALID_TOKEN = 'errors.auth.invalidToken',
+  AUTH_FORBIDDEN = 'errors.auth.forbidden',
+  LOGIN_VIA_PROVIDER = 'errors.loginViaProvider',
 }

@@ -41,7 +41,7 @@ export class QueryUserDto {
   @IsOptional()
   limit?: number;
 
-  @ApiPropertyOptional({ type: String })
+  @ApiPropertyOptional({ type: String, example: '{"roleIds":[1,2]}' })
   @IsOptional()
   @Transform(({ value }) =>
     value ? plainToInstance(FilterUserDto, JSON.parse(value)) : undefined,
@@ -50,7 +50,11 @@ export class QueryUserDto {
   @Type(() => FilterUserDto)
   filters?: FilterUserDto | null;
 
-  @ApiPropertyOptional({ type: String })
+  @ApiPropertyOptional({
+    type: String,
+    example:
+      '[{"orderBy":"firstName","order":"ASC"},{"orderBy":"email","order":"DESC"}]',
+  })
   @IsOptional()
   @Transform(({ value }) => {
     return value ? plainToInstance(SortUserDto, JSON.parse(value)) : undefined;

@@ -53,7 +53,7 @@ export class User {
   roles: Role[];
 
   @ApiProperty({
-    type: () => StatusEnum,
+    type: String,
   })
   status?: StatusEnum;
 
