@@ -1,0 +1,13 @@
+{
+  "notFound": "見つかりませんでした",
+  "userNotFound": "ユーザーが見つかりません",
+  "emailAlreadyExists": "このメールアドレスは既に使用されています",
+  "emailExists": "このメールアドレスは既に使用されています",
+  "emailNotExists": "そのメールアドレスは存在しません",
+  "incorrectPassword": "パスワードが正しくありません",
+  "incorrectOldPassword": "古いパスワードが正しくありません",
+  "missingOldPassword": "古いパスワードが必要です",
+  "invalidHash": "リンクが無効か期限切れです",
+  "statusNotExists": "ステータスが存在しません",
+  "roleNotExists": "ロールが存在しません"
+}

@@ -1,0 +1,13 @@
+{
+  "notFound": "Not found",
+  "userNotFound": "User not found",
+  "emailAlreadyExists": "Email already exists",
+  "emailExists": "Email already exists",
+  "emailNotExists": "Email does not exist",
+  "incorrectPassword": "Incorrect password",
+  "incorrectOldPassword": "Incorrect old password",
+  "missingOldPassword": "Missing old password",
+  "invalidHash": "Invalid or expired link",
+  "statusNotExists": "Status does not exist",
+  "roleNotExists": "Role does not exist"
+}

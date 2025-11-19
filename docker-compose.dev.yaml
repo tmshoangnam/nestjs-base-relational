@@ -1,0 +1,60 @@
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - template-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: survey_nocode_db
+    networks:
+      - survey-net
+  maildev:
+    build:
+      context: .
+      dockerfile: maildev.Dockerfile
+    ports:
+      - 1080:1080
+      - 1025:1025
+    networks:
+      - survey-net
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+    networks:
+      - survey-net
+  # survey-nocode-be:
+  #   image: node:20-alpine
+  #   container_name: survey-nocode-be
+  #   working_dir: /app
+  #   command: sh -c "npm install && npm run start:dev:docker"
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - ./env-example-relational
+  #   environment:
+  #     DATABASE_HOST: postgres
+  #     DATABASE_PORT: "5432"
+  #     DATABASE_USERNAME: root
+  #     DATABASE_PASSWORD: root
+  #     DATABASE_NAME: survey_nocode_db
+  #     REDIS_URL: redis://redis:6379
+  #     KAFKA_BROKERS: kafka:9092
+  #     NODE_ENV: development
+  #     APP_PORT: 3000
+  #     CHOKIDAR_USEPOLLING: true
+  #     CHOKIDAR_INTERVAL: 1000
+  #   volumes:
+  #     - ./:/app:delegated
+  #     - survey-nocode-node-module:/app/node_modules
+  #   networks:
+  #     - survey-net
+volumes:
+  template-db:
+
+networks:
+  survey-net:
+    name: survey-net
