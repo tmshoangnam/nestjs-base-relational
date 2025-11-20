@@ -38,6 +38,6 @@ export class UserEntity extends EntityRelationalHelper {
   })
   roles: RoleEntity[];
 
-  @Column({ enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' })
+  @Column({ type: 'enum', enum: StatusEnum, default: StatusEnum.active })
   status?: StatusEnum;
 }

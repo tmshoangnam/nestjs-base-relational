@@ -20,7 +20,7 @@ export abstract class BaseRelational extends BaseEntity {
   @DeleteDateColumn({ nullable: true })
   deletedAt: Date;
 
-  @Column({ type: 'bigint' })
+  @Column({ type: 'bigint', nullable: true })
   createdBy: number;
 
   @Column({ type: 'bigint', nullable: true })

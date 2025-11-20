@@ -55,7 +55,7 @@ For support of both databases used [Hexagonal Architecture](architecture.md#hexa
 1. Next, generate migration file:
 
    ```bash
-   npm run migration:generate -- src/database/migrations/CreatePostTable
+   npm run migration:generate -- src/database/migrations/CreateTable
    ```
 
 1. Apply this migration to database via [npm run migration:run](#run-migration).

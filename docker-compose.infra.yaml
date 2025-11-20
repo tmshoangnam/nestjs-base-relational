@@ -5,8 +5,6 @@ services:
       - 5432:5432
     volumes:
       - survey-db:/var/lib/postgresql/data
-    env_file:
-      - ./.env
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
@@ -28,28 +26,8 @@ services:
       - 6379:6379
     networks:
       - survey-net
-  survey-nocode-be:
-    image: node:20-alpine
-    container_name: survey-nocode-be
-    working_dir: /app
-    command: sh -c "npm install && npm run start:dev:docker"
-    ports:
-      - "3000:3000"
-    env_file:
-      - ./.env
-    environment:
-      CHOKIDAR_USEPOLLING: true
-      CHOKIDAR_INTERVAL: 1000
-    volumes:
-      - ./:/app:delegated
-      - survey-nocode-node-module:/app/node_modules
-    networks:
-      - survey-net
-    depends_on:
-      - postgres
 volumes:
   survey-db:
-  survey-nocode-node-module:
 
 networks:
   survey-net:
