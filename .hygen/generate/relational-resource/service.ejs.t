@@ -25,7 +25,10 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Service {
     // Do not remove comment below.
     // <creating-property />
 
-    return ;
+    return this.<%= h.inflection.camelize(name, true) %>Repository.create({
+      // Do not remove comment below.
+      // <creating-property-payload />
+    });
   }
 
   findAllWithPagination({

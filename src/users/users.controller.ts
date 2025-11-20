@@ -35,6 +35,8 @@ import { UsersService } from './users.service';
 import { RolesGuard } from '../roles/roles.guard';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ResponseUtil } from '../utils/ResponseUtil';
+import { ResponseData } from '../utils/dto/ResponseData';
 
 @ApiBearerAuth()
 @Roles(RoleEnum.admin)
@@ -55,8 +57,10 @@ export class UsersController {
   })
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProfileDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createProfileDto);
+  create(@Body() createProfileDto: CreateUserDto): Promise<ResponseData<User>> {
+    return this.usersService
+      .create(createProfileDto)
+      .then((user) => ResponseUtil.successWithData(user));
   }
 
   @ApiOkResponse({
@@ -102,8 +106,12 @@ export class UsersController {
     type: String,
     required: true,
   })
-  findOne(@Param('id') id: User['id']): Promise<NullableType<User>> {
-    return this.usersService.findById(id);
+  findOne(
+    @Param('id') id: User['id'],
+  ): Promise<ResponseData<NullableType<User>>> {
+    return this.usersService
+      .findById(id)
+      .then((user) => ResponseUtil.successWithData(user));
   }
 
   @ApiOkResponse({
@@ -122,8 +130,10 @@ export class UsersController {
   update(
     @Param('id') id: User['id'],
     @Body() updateProfileDto: UpdateUserDto,
-  ): Promise<User | null> {
-    return this.usersService.update(id, updateProfileDto);
+  ): Promise<ResponseData<User | null>> {
+    return this.usersService
+      .update(id, updateProfileDto)
+      .then((user) => ResponseUtil.successWithData(user));
   }
 
   @Delete(':id')
@@ -133,7 +143,7 @@ export class UsersController {
     required: true,
   })
   @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: User['id']): Promise<void> {
-    return this.usersService.remove(id);
+  remove(@Param('id') id: User['id']): Promise<ResponseData<null>> {
+    return this.usersService.remove(id).then(() => ResponseUtil.success());
   }
 }

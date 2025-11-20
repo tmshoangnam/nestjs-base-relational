@@ -20,6 +20,8 @@ import { Roles } from './roles.decorator';
 import { RoleEnum } from './roles.enum';
 import { plainToClass } from 'class-transformer';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ResponseUtil } from '../utils/ResponseUtil';
+import { ResponseData } from '../utils/dto/ResponseData';
 
 @ApiTags('Roles')
 @Controller({
@@ -34,26 +36,30 @@ export class RolesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() createRoleDto: CreateRoleDto): Promise<RoleDto> {
+  async create(
+    @Body() createRoleDto: CreateRoleDto,
+  ): Promise<ResponseData<RoleDto>> {
     const role = await this.rolesService.create(createRoleDto);
-    return plainToClass(RoleDto, role);
+    return ResponseUtil.successWithData(plainToClass(RoleDto, role));
   }
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<RoleDto[]> {
+  async findAll(): Promise<ResponseData<RoleDto[]>> {
     const roles = await this.rolesService.findMany();
-    return roles.map((role) => plainToClass(RoleDto, role));
+    return ResponseUtil.successWithData(
+      roles.map((role) => plainToClass(RoleDto, role)),
+    );
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id') id: string): Promise<RoleDto> {
+  async findOne(@Param('id') id: string): Promise<ResponseData<RoleDto>> {
     const role = await this.rolesService.findById(id);
     if (!role) {
       throw new Error('Role not found');
     }
-    return plainToClass(RoleDto, role);
+    return ResponseUtil.successWithData(plainToClass(RoleDto, role));
   }
 
   @Patch(':id')
@@ -61,14 +67,15 @@ export class RolesController {
   async update(
     @Param('id') id: string,
     @Body() updateRoleDto: UpdateRoleDto,
-  ): Promise<RoleDto> {
+  ): Promise<ResponseData<RoleDto>> {
     const role = await this.rolesService.update(id, updateRoleDto);
-    return plainToClass(RoleDto, role);
+    return ResponseUtil.successWithData(plainToClass(RoleDto, role));
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: string): Promise<ResponseData<null>> {
     await this.rolesService.remove(id);
+    return ResponseUtil.success();
   }
 }

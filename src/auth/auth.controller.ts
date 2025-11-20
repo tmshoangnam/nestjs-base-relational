@@ -25,6 +25,8 @@ import { RolesGuard } from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
 import { RoleEnum } from '../roles/roles.enum';
 import { JwtAuthGuard } from './strategies/jwt.guard';
+import { ResponseUtil } from '../utils/ResponseUtil';
+import { ResponseData } from '../utils/dto/ResponseData';
 
 @ApiTags('Auth')
 @Controller({
@@ -42,25 +44,32 @@ export class AuthController {
     type: LoginResponseDto,
   })
   @HttpCode(HttpStatus.OK)
-  public login(@Body() loginDto: AuthEmailLoginDto): Promise<LoginResponseDto> {
-    return this.service.validateLogin(loginDto);
+  public login(
+    @Body() loginDto: AuthEmailLoginDto,
+  ): Promise<ResponseData<LoginResponseDto>> {
+    return this.service
+      .validateLogin(loginDto)
+      .then((data) => ResponseUtil.successWithData(data));
   }
 
   @Post('forgot/password')
   @HttpCode(HttpStatus.NO_CONTENT)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthForgotPasswordDto,
-  ): Promise<void> {
-    return this.service.forgotPassword(forgotPasswordDto.email);
+  ): Promise<ResponseData<null>> {
+    return this.service
+      .forgotPassword(forgotPasswordDto.email)
+      .then(() => ResponseUtil.success());
   }
 
   @Post('reset/password')
   @HttpCode(HttpStatus.NO_CONTENT)
-  resetPassword(@Body() resetPasswordDto: AuthResetPasswordDto): Promise<void> {
-    return this.service.resetPassword(
-      resetPasswordDto.hash,
-      resetPasswordDto.password,
-    );
+  resetPassword(
+    @Body() resetPasswordDto: AuthResetPasswordDto,
+  ): Promise<ResponseData<null>> {
+    return this.service
+      .resetPassword(resetPasswordDto.hash, resetPasswordDto.password)
+      .then(() => ResponseUtil.success());
   }
 
   @ApiBearerAuth()
@@ -74,8 +83,10 @@ export class AuthController {
     type: User,
   })
   @HttpCode(HttpStatus.OK)
-  public me(@Request() request): Promise<NullableType<User>> {
-    return this.service.me(request.user);
+  public me(@Request() request): Promise<ResponseData<NullableType<User>>> {
+    return this.service
+      .me(request.user)
+      .then((data) => ResponseUtil.successWithData(data));
   }
 
   @ApiBearerAuth()
@@ -88,21 +99,27 @@ export class AuthController {
   @Post('refresh')
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
-  public refresh(@Request() request): Promise<RefreshResponseDto> {
-    return this.service.refreshToken({
-      sessionId: request.user.sessionId,
-      hash: request.user.hash,
-    });
+  public refresh(
+    @Request() request,
+  ): Promise<ResponseData<RefreshResponseDto>> {
+    return this.service
+      .refreshToken({
+        sessionId: request.user.sessionId,
+        hash: request.user.hash,
+      })
+      .then((data) => ResponseUtil.successWithData(data));
   }
 
   @ApiBearerAuth()
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  public async logout(@Request() request): Promise<void> {
-    await this.service.logout({
-      sessionId: request.user.sessionId,
-    });
+  public async logout(@Request() request): Promise<ResponseData<null>> {
+    return this.service
+      .logout({
+        sessionId: request.user.sessionId,
+      })
+      .then(() => ResponseUtil.success());
   }
 
   @ApiBearerAuth()
@@ -118,7 +135,9 @@ export class AuthController {
   public update(
     @Request() request,
     @Body() userDto: AuthUpdateDto,
-  ): Promise<NullableType<User>> {
-    return this.service.update(request.user, userDto);
+  ): Promise<ResponseData<NullableType<User>>> {
+    return this.service
+      .update(request.user, userDto)
+      .then((data) => ResponseUtil.successWithData(data));
   }
 }

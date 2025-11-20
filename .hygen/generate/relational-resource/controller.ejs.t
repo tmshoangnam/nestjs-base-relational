@@ -30,6 +30,9 @@ import {
 } from '../utils/dto/infinity-pagination-response.dto';
 import { infinityPagination } from '../utils/infinity-pagination';
 import { FindAll<%= h.inflection.transform(name, ['pluralize']) %>Dto } from './dto/find-all-<%= h.inflection.transform(name, ['pluralize', 'underscore', 'dasherize']) %>.dto';
+import { ResponseUtil } from '../utils/ResponseUtil';
+import { ResponseData } from '../utils/dto/ResponseData';
+import { NullableType } from '../utils/types/nullable.type';
 
 @ApiTags('<%= h.inflection.transform(name, ['pluralize', 'humanize']) %>')
 @ApiBearerAuth()
@@ -45,8 +48,8 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
   @ApiCreatedResponse({
     type: <%= name %>,
   })
-  create(@Body() create<%= name %>Dto: Create<%= name %>Dto) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.create(create<%= name %>Dto);
+  create(@Body() create<%= name %>Dto: Create<%= name %>Dto): Promise<ResponseData<<%= name %>>> {
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.create(create<%= name %>Dto).then(data => ResponseUtil.successWithData(data));
   }
 
   @Get()
@@ -82,8 +85,8 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
   @ApiOkResponse({
     type: <%= name %>,
   })
-  findById(@Param('id') id: number) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findById(id);
+  findById(@Param('id') id: number): Promise<ResponseData<NullableType<<%= name %>>>> {
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.findById(id).then(data => ResponseUtil.successWithData(data));
   }
 
   @Patch(':id')
@@ -98,8 +101,8 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
   update(
     @Param('id') id: number,
     @Body() update<%= name %>Dto: Update<%= name %>Dto,
-  ) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.update(id, update<%= name %>Dto);
+  ): Promise<ResponseData<NullableType<<%= name %>>>> {
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.update(id, update<%= name %>Dto).then(data => ResponseUtil.successWithData(data));
   }
 
   @Delete(':id')
@@ -108,7 +111,7 @@ export class <%= h.inflection.transform(name, ['pluralize']) %>Controller {
     type: Number,
     required: true,
   })
-  remove(@Param('id') id: number) {
-    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.remove(id);
+  remove(@Param('id') id: number): Promise<ResponseData<null>> {
+    return this.<%= h.inflection.camelize(h.inflection.pluralize(name), true) %>Service.remove(id).then(() => ResponseUtil.success());
   }
 }
