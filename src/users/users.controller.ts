@@ -142,7 +142,7 @@ export class UsersController {
     type: String,
     required: true,
   })
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   remove(@Param('id') id: User['id']): Promise<ResponseData<null>> {
     return this.usersService.remove(id).then(() => ResponseUtil.success());
   }

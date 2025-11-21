@@ -24,4 +24,6 @@ export abstract class SessionRepository {
     userId: User['id'];
     excludeSessionId: Session['id'];
   }): Promise<void>;
+
+  abstract existsById(id: Session['id']): Promise<boolean>;
 }

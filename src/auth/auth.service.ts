@@ -46,7 +46,9 @@ export class AuthService {
     const user = await this.usersService.findByEmail(loginDto.email);
 
     if (!user) {
-      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
+      throw BusinessException.badRequest(
+        getMessage(MessagesEnum.EMAIL_OR_PASSWORD_INCORRECT),
+      );
     }
 
     if (user.provider !== AuthProvidersEnum.email) {
@@ -59,7 +61,7 @@ export class AuthService {
 
     if (!user.password) {
       throw BusinessException.badRequest(
-        getMessage(MessagesEnum.INCORRECT_PASSWORD),
+        getMessage(MessagesEnum.EMAIL_OR_PASSWORD_INCORRECT),
       );
     }
 
@@ -70,7 +72,7 @@ export class AuthService {
 
     if (!isValidPassword) {
       throw BusinessException.badRequest(
-        getMessage(MessagesEnum.INCORRECT_PASSWORD),
+        getMessage(MessagesEnum.EMAIL_OR_PASSWORD_INCORRECT),
       );
     }
 
@@ -285,7 +287,7 @@ export class AuthService {
     await this.usersService.update(user.id, user);
   }
 
-  async forgotPassword(email: string): Promise<void> {
+  async forgotPassword(email: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
 
     if (!user) {
@@ -293,7 +295,6 @@ export class AuthService {
         getMessage(MessagesEnum.EMAIL_NOT_EXISTS),
       );
     }
-
     const tokenExpiresIn = this.configService.getOrThrow('auth.forgotExpires', {
       infer: true,
     });
@@ -429,7 +430,6 @@ export class AuthService {
       });
     }
 
-    delete userDto.email;
     delete userDto.oldPassword;
     const updateData = {
       ...userDto,

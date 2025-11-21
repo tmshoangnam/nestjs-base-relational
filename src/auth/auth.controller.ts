@@ -21,9 +21,6 @@ import { LoginResponseDto } from './dto/login-response.dto';
 import { NullableType } from '../utils/types/nullable.type';
 import { User } from '../users/domain/user';
 import { RefreshResponseDto } from './dto/refresh-response.dto';
-import { RolesGuard } from '../roles/roles.guard';
-import { Roles } from '../roles/roles.decorator';
-import { RoleEnum } from '../roles/roles.enum';
 import { JwtAuthGuard } from './strategies/jwt.guard';
 import { ResponseUtil } from '../utils/ResponseUtil';
 import { ResponseData } from '../utils/dto/ResponseData';
@@ -39,7 +36,7 @@ export class AuthController {
   @SerializeOptions({
     groups: ['me'],
   })
-  @Post('email/login')
+  @Post('login')
   @ApiOkResponse({
     type: LoginResponseDto,
   })
@@ -53,20 +50,20 @@ export class AuthController {
   }
 
   @Post('forgot/password')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   async forgotPassword(
     @Body() forgotPasswordDto: AuthForgotPasswordDto,
-  ): Promise<ResponseData<null>> {
-    return this.service
-      .forgotPassword(forgotPasswordDto.email)
-      .then(() => ResponseUtil.success());
+  ): Promise<ResponseData<any>> {
+    await this.service.forgotPassword(forgotPasswordDto.email);
+    console.log('Forgot password requested for:', forgotPasswordDto.email);
+    return ResponseUtil.success();
   }
 
   @Post('reset/password')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   resetPassword(
     @Body() resetPasswordDto: AuthResetPasswordDto,
-  ): Promise<ResponseData<null>> {
+  ): Promise<ResponseData<any>> {
     return this.service
       .resetPassword(resetPasswordDto.hash, resetPasswordDto.password)
       .then(() => ResponseUtil.success());
@@ -77,8 +74,7 @@ export class AuthController {
     groups: ['me'],
   })
   @Get('me')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(RoleEnum.admin)
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponse({
     type: User,
   })
@@ -113,7 +109,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Post('logout')
   @UseGuards(JwtAuthGuard)
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   public async logout(@Request() request): Promise<ResponseData<null>> {
     return this.service
       .logout({

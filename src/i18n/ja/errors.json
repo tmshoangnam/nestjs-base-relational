@@ -1,6 +1,7 @@
 {
   "notFound": "見つかりませんでした",
   "userNotFound": "ユーザーが見つかりません",
+  "emailOrPasswordIncorrect": "メールアドレスまたはパスワードが正しくありません",
   "emailAlreadyExists": "このメールアドレスは既に使用されています",
   "emailExists": "このメールアドレスは既に使用されています",
   "emailNotExists": "そのメールアドレスは存在しません",
@@ -10,5 +11,11 @@
   "invalidHash": "リンクが無効か期限切れです",
   "statusNotExists": "ステータスが存在しません",
   "roleNotExists": "ロールが存在しません",
-  "loginViaProvider": "{{provider}}を通じてログインしてください"
+  "loginViaProvider": "{provider}を通じてログインしてください",
+  "dataNotFound": "{resource}が見つかりません",
+  "dataExists": "{resource}は既に存在します",
+  "dataNotExists": "{resource}は存在しません",
+  "unauthorized": "認証されていません",
+  "invalidToken": "トークンが無効です",
+  "forbidden": "禁止されています"
 }

@@ -42,4 +42,8 @@ export class SessionService {
   }): Promise<void> {
     return this.sessionRepository.deleteByUserIdWithExclude(conditions);
   }
+
+  existsById(id: Session['id']): Promise<boolean> {
+    return this.sessionRepository.existsById(id);
+  }
 }

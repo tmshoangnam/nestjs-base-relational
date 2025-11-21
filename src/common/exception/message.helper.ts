@@ -14,7 +14,7 @@ export function getMessage(
     const i18n = I18nContext.current();
     if (i18n) {
       // nestjs-i18n's t() can return string | object depending on usage; cast to string
-      const translated = i18n.t(key as unknown as string, args) as unknown;
+      const translated = i18n.t(key as unknown as string, { args }) as unknown;
       if (typeof translated === 'string') return translated;
       // If translation returned an object, stringify as fallback
       return JSON.stringify(translated);

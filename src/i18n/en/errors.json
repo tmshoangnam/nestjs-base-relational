@@ -1,6 +1,7 @@
 {
   "notFound": "Not found",
   "userNotFound": "User not found",
+  "emailOrPasswordIncorrect": "Email or password is incorrect",
   "emailAlreadyExists": "Email already exists",
   "emailExists": "Email already exists",
   "emailNotExists": "Email does not exist",
@@ -10,5 +11,11 @@
   "invalidHash": "Invalid or expired link",
   "statusNotExists": "Status does not exist",
   "roleNotExists": "Role does not exist",
-  "loginViaProvider": "Please login via {{provider}}"
+  "loginViaProvider": "Please login via {provider}",
+  "dataNotFound": "{resource} not found",
+  "dataExists": "{resource} already exists",
+  "dataNotExists": "{resource} does not exist",
+  "unauthorized": "Unauthorized",
+  "invalidToken": "Invalid token",
+  "forbidden": "Forbidden"
 }
