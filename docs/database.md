@@ -135,7 +135,7 @@ npm run seed:run:relational
             email: faker.internet.email(),
             password: faker.internet.password(),
             role: this.repositoryRole.create({
-              id: RoleEnum.user,
+              id: RoleEnum.USER,
               name: 'User',
             }),
             status: this.repositoryStatus.create({

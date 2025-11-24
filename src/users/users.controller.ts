@@ -39,7 +39,7 @@ import { ResponseUtil } from '../utils/ResponseUtil';
 import { ResponseData } from '../utils/dto/ResponseData';
 
 @ApiBearerAuth()
-@Roles(RoleEnum.admin)
+@Roles(RoleEnum.SYSTEM_ADMIN)
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiTags('Users')
 @Controller({

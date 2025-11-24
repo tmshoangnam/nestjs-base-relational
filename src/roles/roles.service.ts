@@ -23,7 +23,9 @@ export class RolesService {
     );
 
     if (existingRole) {
-      throw new Error(`Role ${createRoleDto.name} already exists`);
+      throw BusinessException.badRequest(
+        `Role ${createRoleDto.name} already exists`,
+      );
     }
 
     return this.roleRepository.create(createRoleDto);
@@ -31,6 +33,14 @@ export class RolesService {
 
   async findMany(): Promise<Role[]> {
     return this.roleRepository.findMany();
+  }
+
+  async findManyWithPagination(options: {
+    page: number;
+    limit: number;
+    name?: string | undefined;
+  }): Promise<Role[]> {
+    return this.roleRepository.findManyWithPagination(options);
   }
 
   async findById(id: Role['id']): Promise<NullableType<Role>> {

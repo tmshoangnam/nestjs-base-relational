@@ -6,12 +6,12 @@ import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transf
 export class AuthUpdateDto {
   @ApiPropertyOptional({ example: 'John' })
   @IsOptional()
-  @IsNotEmpty({ message: 'mustBeNotEmpty' })
+  @IsNotEmpty()
   firstName?: string;
 
   @ApiPropertyOptional({ example: 'Doe' })
   @IsOptional()
-  @IsNotEmpty({ message: 'mustBeNotEmpty' })
+  @IsNotEmpty()
   lastName?: string;
 
   @ApiPropertyOptional({ example: 'new.email@example.com' })
@@ -30,7 +30,7 @@ export class AuthUpdateDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsNotEmpty({ message: 'mustBeNotEmpty' })
+  @IsNotEmpty()
   @Length(6, 255)
   oldPassword?: string;
 }

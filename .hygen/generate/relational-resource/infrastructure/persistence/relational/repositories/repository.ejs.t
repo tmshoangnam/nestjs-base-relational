@@ -10,6 +10,7 @@ import { <%= name %> } from '../../../../domain/<%= h.inflection.transform(name,
 import { <%= name %>Repository } from '../../<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.repository';
 import { <%= name %>Mapper } from '../mappers/<%= h.inflection.transform(name, ['underscore', 'dasherize']) %>.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { BusinessException } from '../../../../../common/exception/business.exception';
 
 @Injectable()
 export class <%= name %>RelationalRepository implements <%= name %>Repository {
@@ -64,7 +65,7 @@ export class <%= name %>RelationalRepository implements <%= name %>Repository {
     });
 
     if (!entity) {
-      throw new Error('Record not found');
+      throw BusinessException.notFound('Record not found');
     }
 
     const updatedEntity = await this.<%= h.inflection.camelize(name, true) %>Repository.save(

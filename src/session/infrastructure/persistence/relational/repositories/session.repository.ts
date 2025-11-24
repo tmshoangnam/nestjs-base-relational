@@ -9,6 +9,7 @@ import { Session } from '../../../../domain/session';
 
 import { SessionMapper } from '../mappers/session.mapper';
 import { User } from '../../../../../users/domain/user';
+import { BusinessException } from '../../../../../common/exception/business.exception';
 
 @Injectable()
 export class SessionRelationalRepository implements SessionRepository {
@@ -52,7 +53,7 @@ export class SessionRelationalRepository implements SessionRepository {
     });
 
     if (!entity) {
-      throw new Error('Session not found');
+      throw BusinessException.badRequest('Session not found');
     }
 
     const updatedEntity = await this.sessionRepository.save(

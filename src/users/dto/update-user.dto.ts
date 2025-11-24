@@ -1,13 +1,14 @@
 import { PartialType, ApiPropertyOptional } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
 
-import { Transform, Type } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
   IsEmail,
+  IsEnum,
   IsNumber,
   IsOptional,
-  MinLength,
+  Length,
 } from 'class-validator';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 import { StatusEnum } from '../statuses.enum';
@@ -17,11 +18,12 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   @Transform(lowerCaseTransformer)
   @IsOptional()
   @IsEmail()
+  @Length(5, 255)
   email?: string | null;
 
   @ApiPropertyOptional()
   @IsOptional()
-  @MinLength(6)
+  @Length(6, 255)
   password?: string;
 
   provider?: string;
@@ -49,6 +51,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @ApiPropertyOptional({ enum: StatusEnum })
   @IsOptional()
-  @Type(() => String)
+  @IsEnum(StatusEnum)
   status?: StatusEnum;
 }

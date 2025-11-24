@@ -17,7 +17,7 @@ import { JwtPayloadType } from './strategies/types/jwt-payload.type';
 import { UsersService } from '../users/users.service';
 import { AllConfigType } from '../config/config.type';
 import { MailService } from '../mail/mail.service';
-import { RoleEnum } from '../roles/roles.enum';
+import { getRolePermissions, RoleEnum } from '../roles/roles.enum';
 import { Session } from '../session/domain/session';
 import { SessionService } from '../session/session.service';
 import { StatusEnum } from '../users/statuses.enum';
@@ -85,6 +85,11 @@ export class AuthService {
       user,
       hash,
     });
+    const userRoles =
+      user.roles.map((r) => (r.name as RoleEnum) || '').filter(Boolean) || [];
+    const userPermissions = getRolePermissions(userRoles);
+    console.log('userRoles', userRoles);
+    console.log('userPermissions', userPermissions);
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,
       role: user.roles?.[0] || null,
@@ -97,7 +102,10 @@ export class AuthService {
       refreshToken,
       token,
       tokenExpires,
-      user,
+      user: {
+        ...user,
+        permissions: userPermissions,
+      },
     };
   }
 
@@ -129,7 +137,7 @@ export class AuthService {
       user = userByEmail;
     } else if (socialData.id) {
       let roleIds: number[] = [];
-      const role = await this.roleService.findByName(RoleEnum.user);
+      const role = await this.roleService.findByName(RoleEnum.USER);
       if (role) {
         roleIds = [role.id as number];
       }
@@ -201,7 +209,7 @@ export class AuthService {
     const user = await this.usersService.create({
       ...dto,
       email: dto.email,
-      roleIds: [(await this.getRole(RoleEnum.user)).id as number],
+      roleIds: [(await this.getRole(RoleEnum.USER)).id as number],
       status: StatusEnum.inactive,
     });
 

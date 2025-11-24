@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class CreateTable1763619010600 implements MigrationInterface {
-  name = 'CreateTable1763619010600';
+export class CreateTable1763996138636 implements MigrationInterface {
+  name = 'CreateTable1763996138636';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -27,9 +27,6 @@ export class CreateTable1763619010600 implements MigrationInterface {
     );
     await queryRunner.query(
       `CREATE INDEX "IDX_3d2f174ef04fb312fdebd0ddc5" ON "session" ("userId") `,
-    );
-    await queryRunner.query(
-      `CREATE TABLE "categories" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP DEFAULT now(), "deletedAt" TIMESTAMP, "createdBy" bigint, "updatedBy" bigint, "name" character varying(255) NOT NULL, "code" character varying(50) NOT NULL, CONSTRAINT "UQ_8b0be371d28245da6e4f4b61878" UNIQUE ("name"), CONSTRAINT "UQ_77d7eff8a7aaa05457a12b8007a" UNIQUE ("code"), CONSTRAINT "PK_24dbc6126a28ff948da33e97d3b" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "user_roles" ("user_id" integer NOT NULL, "role_id" integer NOT NULL, CONSTRAINT "PK_23ed6f04fe43066df08379fd034" PRIMARY KEY ("user_id", "role_id"))`,
@@ -68,7 +65,6 @@ export class CreateTable1763619010600 implements MigrationInterface {
       `DROP INDEX "public"."IDX_87b8888186ca9769c960e92687"`,
     );
     await queryRunner.query(`DROP TABLE "user_roles"`);
-    await queryRunner.query(`DROP TABLE "categories"`);
     await queryRunner.query(
       `DROP INDEX "public"."IDX_3d2f174ef04fb312fdebd0ddc5"`,
     );

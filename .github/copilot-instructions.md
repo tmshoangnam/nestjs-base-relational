@@ -53,7 +53,7 @@ Three components working together:
    - Stores user ID in ClsService for audit/logging
 
 2. **RolesGuard** (`src/roles/roles.guard.ts`)
-   - Checks `@Roles(RoleEnum.admin, RoleEnum.client)` decorator
+   - Checks `@Roles(RoleEnum.SYSTEM_ADMIN, RoleEnum.client)` decorator
    - Matches user's roles against required roles
    - Example: `src/users/users.controller.ts:42-43`
 
@@ -65,7 +65,7 @@ Three components working together:
 ```typescript
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(RoleEnum.admin)
+@Roles(RoleEnum.SYSTEM_ADMIN)
 @ApiTags('Users')
 @Controller('users')
 export class UsersController { ... }
@@ -828,7 +828,7 @@ export class UsersService {
       roles = createUserDto.roleIds.map((id) => ({ id }));
     } else {
       // Default role fallback
-      const defaultRole = await this.rolesService.findByName(RoleEnum.user);
+      const defaultRole = await this.rolesService.findByName(RoleEnum.USER);
       if (defaultRole) roles = [{ id: defaultRole.id }];
     }
 
@@ -1147,7 +1147,7 @@ See `src/users/users.module.ts` for the exact pattern.
 **ALWAYS use both guards together on protected endpoints:**
 ```typescript
 @UseGuards(JwtAuthGuard, RolesGuard)  // ← Both required
-@Roles(RoleEnum.admin)                // ← Specify required role(s)
+@Roles(RoleEnum.SYSTEM_ADMIN)                // ← Specify required role(s)
 ```
 
 Using only `JwtAuthGuard` without `RolesGuard` skips role validation. This is a security issue.

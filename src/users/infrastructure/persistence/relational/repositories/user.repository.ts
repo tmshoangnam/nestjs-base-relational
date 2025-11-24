@@ -9,6 +9,9 @@ import { User } from '../../../../domain/user';
 import { UserRepository } from '../../user.repository';
 import { UserMapper } from '../mappers/user.mapper';
 import { IPaginationOptions } from '../../../../../utils/types/pagination-options';
+import { BusinessException } from '../../../../../common/exception/business.exception';
+import { getMessage } from '../../../../../common/exception/message.helper';
+import { MessagesEnum } from '../../../../../common/exception/messages.enum';
 
 @Injectable()
 export class UsersRelationalRepository implements UserRepository {
@@ -39,6 +42,18 @@ export class UsersRelationalRepository implements UserRepository {
       where.roles = filterOptions.roleIds.map((roleId) => ({
         id: Number(roleId),
       }));
+    }
+    if (filterOptions?.email) {
+      where.email = filterOptions.email;
+    }
+    if (filterOptions?.firstName) {
+      where.firstName = filterOptions.firstName;
+    }
+    if (filterOptions?.lastName) {
+      where.lastName = filterOptions.lastName;
+    }
+    if (filterOptions?.status) {
+      where.status = filterOptions.status;
     }
 
     const entities = await this.usersRepository.find({
@@ -107,7 +122,7 @@ export class UsersRelationalRepository implements UserRepository {
     });
 
     if (!entity) {
-      throw new Error('User not found');
+      throw BusinessException.notFound(getMessage(MessagesEnum.USER_NOT_FOUND));
     }
 
     const updatedEntity = await this.usersRepository.save(

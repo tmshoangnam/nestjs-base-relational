@@ -11,7 +11,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  MinLength,
+  Length,
 } from 'class-validator';
 import { lowerCaseTransformer } from '../../utils/transformers/lower-case.transformer';
 import { StatusEnum } from '../statuses.enum';
@@ -21,10 +21,11 @@ export class CreateUserDto {
   @Transform(lowerCaseTransformer)
   @IsNotEmpty()
   @IsEmail()
+  @Length(5, 255)
   email?: string | null;
 
   @ApiProperty()
-  @MinLength(6)
+  @Length(6, 255)
   password?: string;
 
   provider?: string;
@@ -40,7 +41,6 @@ export class CreateUserDto {
   lastName?: string | null;
 
   @ApiPropertyOptional({ type: [Number], example: [1, 2] })
-  @IsOptional()
   @IsArray()
   @IsNumber({}, { each: true })
   roleIds?: number[];

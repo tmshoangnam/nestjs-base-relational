@@ -12,6 +12,8 @@
   "statusNotExists": "Status does not exist",
   "roleNotExists": "Role does not exist",
   "loginViaProvider": "Please login via {provider}",
+  "categoryNameExists": "Category name already exists",
+  "categoryCodeExists": "Category code already exists",
   "dataNotFound": "{resource} not found",
   "dataExists": "{resource} already exists",
   "dataNotExists": "{resource} does not exist",

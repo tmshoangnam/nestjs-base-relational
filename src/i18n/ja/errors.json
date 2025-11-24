@@ -12,6 +12,8 @@
   "statusNotExists": "ステータスが存在しません",
   "roleNotExists": "ロールが存在しません",
   "loginViaProvider": "{provider}を通じてログインしてください",
+  "categoryNameExists": "カテゴリー名は既に存在します",
+  "categoryCodeExists": "カテゴリーコードは既に存在します",
   "dataNotFound": "{resource}が見つかりません",
   "dataExists": "{resource}は既に存在します",
   "dataNotExists": "{resource}は存在しません",

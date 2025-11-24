@@ -17,23 +17,23 @@ export class UserSeedService {
   ) {}
 
   async run() {
-    const countAdmin = await this.repository.count({
+    const countSystemAdmin = await this.repository.count({
       where: {
         roles: {
-          name: RoleEnum.admin,
+          name: RoleEnum.SYSTEM_ADMIN,
         },
       },
     });
 
-    if (!countAdmin) {
+    if (!countSystemAdmin) {
       const salt = await bcrypt.genSalt();
       const password = await bcrypt.hash('secret', salt);
 
-      // Get the admin role and status from database
-      const adminRole = await this.roleRepository.findOne({
-        where: { name: RoleEnum.admin },
+      // Get the system admin role and status from database
+      const systemAdminRole = await this.roleRepository.findOne({
+        where: { name: RoleEnum.SYSTEM_ADMIN },
       });
-      if (!adminRole) {
+      if (!systemAdminRole) {
         throw new Error('Required role not found in database');
       }
 
@@ -43,29 +43,29 @@ export class UserSeedService {
           lastName: 'Admin',
           email: 'admin@example.com',
           password,
-          roles: [adminRole],
+          roles: [systemAdminRole],
         }),
       );
     }
 
-    const countUser = await this.repository.count({
+    const countTenantAdmin = await this.repository.count({
       where: {
         roles: {
-          name: RoleEnum.user,
+          name: RoleEnum.ADMIN,
         },
       },
     });
 
-    if (!countUser) {
+    if (!countTenantAdmin) {
       const salt = await bcrypt.genSalt();
       const password = await bcrypt.hash('secret', salt);
 
-      // Get the user role and status from database
-      const userRole = await this.roleRepository.findOne({
-        where: { name: RoleEnum.user },
+      // Get the tenant admin role and status from database
+      const tenantAdminRole = await this.roleRepository.findOne({
+        where: { name: RoleEnum.ADMIN },
       });
 
-      if (!userRole) {
+      if (!tenantAdminRole) {
         throw new Error('Required role not found in database');
       }
 
@@ -73,9 +73,37 @@ export class UserSeedService {
         this.repository.create({
           firstName: 'John',
           lastName: 'Doe',
-          email: 'john.doe@example.com',
+          email: 'tenant.admin@example.com',
           password,
-          roles: [userRole],
+          roles: [tenantAdminRole],
+        }),
+      );
+    }
+
+    const countTenantUser = await this.repository.count({
+      where: {
+        roles: {
+          name: RoleEnum.USER,
+        },
+      },
+    });
+    if (!countTenantUser) {
+      const salt = await bcrypt.genSalt();
+      const password = await bcrypt.hash('secret', salt);
+      // Get the tenant user role and status from database
+      const tenantUserRole = await this.roleRepository.findOne({
+        where: { name: RoleEnum.USER },
+      });
+      if (!tenantUserRole) {
+        throw new Error('Required role not found in database');
+      }
+      await this.repository.save(
+        this.repository.create({
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'tenant.user@example.com',
+          password,
+          roles: [tenantUserRole],
         }),
       );
     }

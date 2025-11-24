@@ -15,13 +15,13 @@ export class RoleSeedService {
     // Create User role
     const countUser = await this.repository.count({
       where: {
-        name: RoleEnum.user,
+        name: RoleEnum.USER,
       },
     });
 
     if (!countUser) {
       const userRole = this.repository.create({
-        name: RoleEnum.user,
+        name: RoleEnum.USER,
         description: 'Regular user with basic permissions',
       });
 
@@ -31,17 +31,33 @@ export class RoleSeedService {
     // Create Admin role
     const countAdmin = await this.repository.count({
       where: {
-        name: RoleEnum.admin,
+        name: RoleEnum.ADMIN,
       },
     });
 
     if (!countAdmin) {
       const adminRole = this.repository.create({
-        name: RoleEnum.admin,
+        name: RoleEnum.ADMIN,
         description: 'Administrator with full permissions',
       });
 
       await this.repository.save(adminRole);
+    }
+
+    // Create Super Admin role
+    const countSuperAdmin = await this.repository.count({
+      where: {
+        name: RoleEnum.SYSTEM_ADMIN,
+      },
+    });
+
+    if (!countSuperAdmin) {
+      const superAdminRole = this.repository.create({
+        name: RoleEnum.SYSTEM_ADMIN,
+        description: 'Administrator with full permissions',
+      });
+
+      await this.repository.save(superAdminRole);
     }
   }
 }

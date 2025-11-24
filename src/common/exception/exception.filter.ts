@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { BusinessException } from './business.exception';
+import { EntityPropertyNotFoundError } from 'typeorm';
 
 @Catch()
 export class ExceptionsFilter implements ExceptionFilter {
@@ -31,6 +32,13 @@ export class ExceptionsFilter implements ExceptionFilter {
         message: res.message || res.error || 'HttpException',
         reason: res.reason || 'HttpException',
       };
+    } else if (exception instanceof EntityPropertyNotFoundError) {
+      statusCode = HttpStatus.BAD_REQUEST;
+      errorResponse = {
+        statusCode: 400,
+        message: exception.message,
+        reason: exception.name,
+      };
     } else if (exception instanceof Error) {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       errorResponse = {
@@ -39,6 +47,7 @@ export class ExceptionsFilter implements ExceptionFilter {
         reason: exception.name,
       };
     } else {
+      console.log('Unhandled exception type:', exception);
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       errorResponse = {
         statusCode: statusCode,

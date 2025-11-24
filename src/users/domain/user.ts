@@ -50,6 +50,11 @@ export class User {
   roles: Role[];
 
   @ApiProperty({
+    type: [String],
+  })
+  permissions?: string[];
+
+  @ApiProperty({
     type: String,
   })
   status?: StatusEnum;

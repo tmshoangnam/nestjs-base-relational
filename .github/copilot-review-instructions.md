@@ -59,7 +59,7 @@ return { users, page, total };
 ### 4. Authorization & Security
 **Check**:
 - ✅ Controllers use BOTH guards: `@UseGuards(JwtAuthGuard, RolesGuard)`
-- ✅ Role specified: `@Roles(RoleEnum.admin)` or appropriate role
+- ✅ Role specified: `@Roles(RoleEnum.SYSTEM_ADMIN)` or appropriate role
 - ✅ `@ApiBearerAuth()` decorator on protected endpoints
 - ✅ No hardcoded security decisions
 
@@ -67,7 +67,7 @@ return { users, page, total };
 ```typescript
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(RoleEnum.admin)
+@Roles(RoleEnum.SYSTEM_ADMIN)
 @Get()
 async findAll() { }
 ```

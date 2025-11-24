@@ -55,7 +55,7 @@ export class UsersService {
       roles = createUserDto.roleIds.map((id) => ({ id }));
     } else {
       // Default role if none provided
-      const role = await this.rolesService.findByName(RoleEnum.user);
+      const role = await this.rolesService.findByName(RoleEnum.ADMIN);
       if (role) {
         roles = [{ id: role.id }];
       }
@@ -148,9 +148,6 @@ export class UsersService {
         password = await bcrypt.hash(updateUserDto.password, salt);
       }
     }
-
-    let email: string | undefined = undefined;
-
     if (updateUserDto.email) {
       const userObject = await this.usersRepository.findByEmail(
         updateUserDto.email,
@@ -160,11 +157,7 @@ export class UsersService {
           getMessage(MessagesEnum.EMAIL_ALREADY_EXISTS),
         );
       }
-
-      email = updateUserDto.email;
     }
-
-    let roles: Role[] | undefined = undefined;
 
     if (updateUserDto.roleIds && updateUserDto.roleIds.length > 0) {
       // Validate all roles
@@ -172,19 +165,14 @@ export class UsersService {
         updateUserDto.roleIds,
       );
       if (
-        roleFromIds.length &&
-        roleFromIds.length === updateUserDto.roleIds.length
+        !roleFromIds.length &&
+        roleFromIds.length !== updateUserDto.roleIds.length
       ) {
-        roles = updateUserDto.roleIds.map((id) => ({ id }));
-      } else {
         throw BusinessException.badRequest(
           getMessage(MessagesEnum.ROLE_NOT_EXISTS),
         );
       }
     }
-
-    let status: StatusEnum | undefined = undefined;
-
     if (updateUserDto.status) {
       const statusObject = Object.values(StatusEnum)
         .map(String)
@@ -194,22 +182,8 @@ export class UsersService {
           getMessage(MessagesEnum.STATUS_NOT_EXISTS),
         );
       }
-
-      status = updateUserDto.status;
     }
-
-    return this.usersRepository.update(id, {
-      // Do not remove comment below.
-      // <updating-property-payload />
-      firstName: updateUserDto.firstName,
-      lastName: updateUserDto.lastName,
-      email,
-      password,
-      roles: roles,
-      status,
-      provider: updateUserDto.provider,
-      socialId: updateUserDto.socialId,
-    });
+    return this.usersRepository.update(id, { ...updateUserDto, password });
   }
 
   async remove(id: User['id']): Promise<void> {

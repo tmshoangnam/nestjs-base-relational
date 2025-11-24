@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNotEmpty, Length } from 'class-validator';
 
 export class CreateRoleDto {
   @ApiProperty({
@@ -7,6 +7,8 @@ export class CreateRoleDto {
     example: 'USER',
   })
   @IsString()
+  @IsNotEmpty()
+  @Length(4, 50)
   name: string;
 
   @ApiProperty({

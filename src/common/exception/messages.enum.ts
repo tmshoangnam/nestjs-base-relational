@@ -21,4 +21,8 @@ export enum MessagesEnum {
   INVALID_TOKEN = 'errors.invalidToken',
   AUTH_FORBIDDEN = 'errors.forbidden',
   LOGIN_VIA_PROVIDER = 'errors.loginViaProvider',
+
+  // Category specific (kept for backward compatibility)
+  CATEGORY_NAME_EXISTS = 'errors.categoryNameExists',
+  CATEGORY_CODE_EXISTS = 'errors.categoryCodeExists',
 }

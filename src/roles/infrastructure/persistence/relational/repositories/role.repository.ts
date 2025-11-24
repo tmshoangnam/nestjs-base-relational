@@ -31,6 +31,29 @@ export class RoleRepository {
     return roles.map((role) => this.toDomain(role));
   }
 
+  async findManyWithPagination({
+    page,
+    limit,
+    name,
+  }: {
+    page: number;
+    limit: number;
+    name?: string | undefined;
+  }): Promise<Role[]> {
+    const qb = this.roleRepository
+      .createQueryBuilder('role')
+      .orderBy('role.id', 'ASC');
+
+    if (name) {
+      qb.where('role.name LIKE :name', { name: `%${name}%` });
+    }
+
+    qb.skip((page - 1) * limit).take(limit);
+
+    const roles = await qb.getMany();
+    return roles.map((role) => this.toDomain(role));
+  }
+
   async findById(id: Role['id']): Promise<NullableType<Role>> {
     const role = await this.roleRepository.findOne({
       where: { id: Number(id) },
